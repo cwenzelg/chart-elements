@@ -1,0 +1,51 @@
+import {dedupingMixin} from '@polymer/polymer/lib/utils/mixin.js';
+/** @polymerMixin */
+export const ChartPropertyBehavior = dedupingMixin(function(superClass) {
+  return class extends superClass {
+    static get properties() {
+      return {
+        type: {
+          type: String,
+          readOnly: true,
+          value: 'bar',
+        },
+
+        chart: {
+          notify: true
+        },
+
+        data: {
+          type: Object,
+          value: function () {
+            return {};
+          }
+        },
+
+        options: {
+          type: Object,
+          value: function () {
+            return {};
+          }
+        }
+      };
+    }
+
+    static get observers() {
+      return [
+        '_configurationChanged(data.*, options.*)'
+      ];
+    }
+
+    _configurationChanged(dataRecord, optionsRecord) {
+      if (dataRecord.base.labels && dataRecord.base.datasets) {
+        this.hasData = true;
+      } else {
+        this.hasData = false;
+      }
+
+      if (this.hasData && this.isAttached) {
+        this._queue();
+      }
+    }
+  }
+});

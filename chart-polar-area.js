@@ -1,11 +1,4 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
-<link rel="import" href="chart-js-import.html">
-<link rel="import" href="chart-property-behavior.html">
-<link rel="import" href="context-behavior.html">
-<link rel="import" href="resize-behavior.html">
-
-<!--
+/**
 Polar area charts are similar to pie charts, but each segment has the same angle - the radius of the segment differs depending on the value.
 
 This type of chart is often useful when we want to show a comparison data similar to a pie chart, but also show a scale of values for context.
@@ -40,37 +33,34 @@ This type of chart is often useful when we want to show a comparison data simila
 @group Chart Elements
 @element chart-polar-area
 @demo demo/chart-polar-area.html
--->
+*/
 
-<link rel="import" href="chart-styles.html">
-<dom-module id="chart-polar-area">
+import './chart-styles.js';
+import 'chart.js/dist/Chart.js';
+import { PolymerElement, html } from '@polymer/polymer';;
+import { IronResizableBehavior } from '@polymer/iron-resizable-behavior/iron-resizable-behavior.js';
+import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
+import {ChartResizeBehavior} from './resize-behavior.js';
+import {ChartContextBehavior} from './context-behavior.js';
+import {ChartPropertyBehavior} from './chart-property-behavior.js';
 
-  <template>
-
+class ChartPolarArea extends ChartResizeBehavior(ChartContextBehavior(ChartPropertyBehavior(mixinBehaviors([IronResizableBehavior], PolymerElement)))) {
+  static get template() {
+    return html`
     <style include="chart-styles"></style>
 
     <div>
       <canvas id="canvas"></canvas>
     </div>
+`;
+  }
 
-  </template>
+  static get is() { return 'chart-polar-area'; }
 
-  <script>
-    Polymer({
+  ready() {
+    super.ready();
+    this._setType('polarArea');
+  }
+}
 
-      is: 'chart-polar-area',
-
-      behaviors: [
-        Polymer.IronResizableBehavior,
-        ChartBehaviors.ChartPropertyBehavior,
-        ChartBehaviors.ContextBehavior,
-        ChartBehaviors.ResizeBehavior
-      ],
-
-      ready: function() {
-        this._setType('polarArea');
-      }
-
-    });
-  </script>
-</dom-module>
+window.customElements.define(ChartPolarArea.is, ChartPolarArea);

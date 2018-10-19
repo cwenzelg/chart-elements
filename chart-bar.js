@@ -1,18 +1,11 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
-<link rel="import" href="chart-js-import.html">
-<link rel="import" href="chart-property-behavior.html">
-<link rel="import" href="context-behavior.html">
-<link rel="import" href="resize-behavior.html">
-
-<!--
+/**
 A bar chart is a way of showing data as bars.
 
 It is sometimes used to show trend data, and the comparison of multiple data sets side by side.
 
 ##### Example
 
-    <chart-horizontal-bar data="[[data]]"></chart-horizontal-bar>
+    <chart-bar data="[[data]]"></chart-bar>
 
     ...
 
@@ -39,38 +32,35 @@ It is sometimes used to show trend data, and the comparison of multiple data set
 @group Chart Elements
 @element chart-bar
 @demo demo/chart-bar.html
--->
+*/
 
-<link rel="import" href="chart-styles.html">
-<dom-module id="chart-horizontal-bar">
+import 'chart.js/dist/Chart.js';
 
-  <template>
+import './chart-styles.js';
+import { PolymerElement, html } from '@polymer/polymer';
+import { IronResizableBehavior } from '@polymer/iron-resizable-behavior/iron-resizable-behavior.js';
+import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
+import {ChartResizeBehavior} from './resize-behavior.js';
+import {ChartContextBehavior} from './context-behavior.js';
+import {ChartPropertyBehavior} from './chart-property-behavior.js';
 
+class ChartBar extends ChartResizeBehavior(ChartContextBehavior(ChartPropertyBehavior(mixinBehaviors([IronResizableBehavior], PolymerElement)))) {
+  static get template() {
+    return html`
     <style include="chart-styles"></style>
 
     <div>
       <canvas id="canvas"></canvas>
     </div>
+`;
+  }
 
-  </template>
+  static get is() { return 'chart-bar'; }
 
-  <script>
-    Polymer({
+  ready() {
+    super.ready();
+    this._setType('bar');
+  }
+}
 
-      is: 'chart-horizontal-bar',
-
-      behaviors: [
-        Polymer.IronResizableBehavior,
-        ChartBehaviors.ChartPropertyBehavior,
-        ChartBehaviors.ContextBehavior,
-        ChartBehaviors.ResizeBehavior
-      ],
-
-      ready: function() {
-        this._setType('horizontalBar');
-      }
-
-    });
-  </script>
-
-</dom-module>
+window.customElements.define(ChartBar.is, ChartBar);

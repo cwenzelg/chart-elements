@@ -1,11 +1,4 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
-<link rel="import" href="chart-js-import.html">
-<link rel="import" href="chart-property-behavior.html">
-<link rel="import" href="context-behavior.html">
-<link rel="import" href="resize-behavior.html">
-
-<!--
+/**
 Pie and doughnut charts are probably the most commonly used chart there are. They are divided into segments, the arc of each segment shows a the proportional value of each piece of data.
 
 They are excellent at showing the relational proportions between data.
@@ -45,39 +38,38 @@ They are also registered under two aliases in the Chart core. Other than their d
 @group Chart Elements
 @element chart-doughnut
 @demo demo/chart-doughnut.html
--->
+*/
+/*
+  FIXME(polymer-modulizer): the above comments were extracted
+  from HTML and may be out of place here. Review them and
+  then delete this comment!
+*/
+import './chart-styles.js';
+import 'chart.js/dist/Chart.js';
+import { PolymerElement, html } from '@polymer/polymer';
+import { IronResizableBehavior } from '@polymer/iron-resizable-behavior/iron-resizable-behavior.js';
+import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
+import {ChartResizeBehavior} from './resize-behavior.js';
+import {ChartContextBehavior} from './context-behavior.js';
+import {ChartPropertyBehavior} from './chart-property-behavior.js';
 
-<link rel="import" href="chart-styles.html">
-<dom-module id="chart-doughnut">
-
-  <template>
-
+class ChartDoughnut extends ChartResizeBehavior(ChartContextBehavior(ChartPropertyBehavior(mixinBehaviors([IronResizableBehavior], PolymerElement)))) {
+  static get template() {
+    return html`
     <style include="chart-styles"></style>
 
     <div>
       <canvas id="canvas"></canvas>
     </div>
+`;
+  }
 
-  </template>
+  static get is() { return 'chart-doughnut' }
 
-  <script>
-    Polymer({
+  ready() {
+    super.ready();
+    this._setType('doughnut');
+  }
+}
 
-      is: 'chart-doughnut',
-
-      behaviors: [
-        Polymer.IronResizableBehavior,
-        ChartBehaviors.ChartPropertyBehavior,
-        ChartBehaviors.ContextBehavior,
-        ChartBehaviors.ResizeBehavior
-      ],
-
-      ready: function() {
-        this._setType('doughnut');
-      }
-
-
-    });
-  </script>
-
-</dom-module>
+window.customElements.define(ChartDoughnut.is, ChartDoughnut);

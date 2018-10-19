@@ -1,9 +1,8 @@
-<script>
-  var ChartBehaviors = ChartBehaviors || {};
-  /** @polymerBehavior */
-  ChartBehaviors.ContextBehavior = {
-
-    _measure: function(cb) {
+import {dedupingMixin} from '@polymer/polymer/lib/utils/mixin.js';
+/** @polymerMixin */
+export const ChartContextBehavior = dedupingMixin(function(superClass) {
+  return class extends superClass {
+    _measure(cb) {
       function measure() {
         if (this.offsetHeight) {
           cb(true);
@@ -12,19 +11,19 @@
         }
       }
       requestAnimationFrame(measure.bind(this));
-    },
+    }
 
-    _queue: function() {
+    _queue() {
       if (this.hasData) {
-        this._measure(function(hasHeight) {
+        this._measure(hasHeight => {
           if (hasHeight) {
             this.updateChart();
           }
-        }.bind(this));
+        });
       }
-    },
+    }
 
-    updateChart: function () {
+    updateChart() {
 
       this.async(function () {
 
@@ -50,13 +49,12 @@
 
       }, null, 0);
 
-    },
+    }
 
-    attached: function() {
+    connectedCallback() {
+      super.connectedCallback();
       this.ctx = this.$.canvas.getContext('2d');
       this._queue();
     }
-
-  };
-
-</script>
+  }
+});
